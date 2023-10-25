@@ -1,0 +1,228 @@
+swagger: "2.0"
+info:
+  title: API_ID optional-string
+  description: "Send notifications to users."
+  version: "1.0.0"
+schemes:
+  - "https"
+paths:
+  /notifications:
+    post:
+      x-google-backend:
+        address: https://us-central1-reliable-vector-386517.cloudfunctions.net/pushMessages
+      description: "Send a notification to users."
+      operationId: "notifications"
+      parameters:
+        - name: user
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Notification"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/text"
+      responses:
+        200:
+          description: "Notification sent successfully."
+          schema:
+            type: string
+        400:
+          description: "Invalid request parameters."
+          schema:
+            type: string
+        500:
+          description: "Internal server error."
+          schema:
+            type: string
+    options:
+      operationId: corsNotifications
+      x-google-backend:
+        address: https://us-central1-reliable-vector-386517.cloudfunctions.net/pushMessages
+      responses:
+        "200":
+          description: A successful response
+
+  /userPreferences:
+    post:
+      x-google-backend:
+        address: https://us-central1-reliable-vector-386517.cloudfunctions.net/saveUserPreferences
+      description: "Post user preferences."
+      operationId: "userPreferencesPost"
+      parameters:
+        - name: email
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/PostUserPreferences"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Preferences updated successfully."
+          schema:
+            type: string
+        400:
+          description: "Invalid request parameters."
+          schema:
+            type: string
+        500:
+          description: "Internal server error."
+          schema:
+            type: string
+    options:
+      operationId: corsUserPreferencesPost
+      x-google-backend:
+        address: https://us-central1-reliable-vector-386517.cloudfunctions.net/saveUserPreferences
+      responses:
+        "200":
+          description: A successful response
+
+  /retrievePreferences:
+    post:
+      x-google-backend:
+        address: https://us-central1-reliable-vector-386517.cloudfunctions.net/RetrieveUserPreferences
+      description: "Get user preferences."
+      operationId: "userPreferencesGet"
+      parameters:
+        - name: email
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/EmailRequestBody"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "User preferences retrieved successfully."
+          schema:
+            $ref: "#/definitions/UserPreferences"
+        400:
+          description: "Invalid request parameters."
+          schema:
+            type: string
+        500:
+          description: "Internal server error."
+          schema:
+            type: string
+    options:
+      operationId: corsUserPreferencesGet
+      x-google-backend:
+        address: https://us-central1-reliable-vector-386517.cloudfunctions.net/RetrieveUserPreferences
+      responses:
+        "200":
+          description: A successful response
+
+  /retrieveNotifications:
+    post:
+      x-google-backend:
+        address: https://us-central1-reliable-vector-386517.cloudfunctions.net/RetrieveNotifications
+      description: "Get user notifications."
+      operationId: "userNotificationsGet"
+      parameters:
+        - name: email
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/EmailRequestBody"
+
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "User preferences retrieved successfully."
+          schema:
+            $ref: "#/definitions/UserNotificationsResponse"
+
+        400:
+          description: "Invalid request parameters."
+          schema:
+            type: string
+        500:
+          description: "Internal server error."
+          schema:
+            type: string
+    options:
+      operationId: corsNotificationsGet
+      x-google-backend:
+        address: https://us-central1-reliable-vector-386517.cloudfunctions.net/RetrieveNotifications
+      responses:
+        "200":
+          description: A successful response
+definitions:
+  Notification:
+    type: object
+    properties:
+      user:
+        type: string
+      details:
+        type: string
+
+  UserNotificationsResponse:
+    type: object
+    properties:
+      preferences:
+        type: array
+        items:
+          $ref: "#/definitions/UserNotificationsItem"
+
+  UserNotificationsItem:
+    type: object
+    properties:
+      datetime:
+        type: string
+      data:
+        type: object
+        properties:
+          details:
+            type: string
+          user:
+            type: string
+      id:
+        type: number
+      email:
+        type: string
+
+  PostUserPreferences:
+    type: object
+    properties:
+      email:
+        type: string
+      preferences:
+        type: object
+        properties:
+          achievements:
+            type: boolean
+          leaderboardChanges:
+            type: boolean
+          gameInvites:
+            type: boolean
+          newTriviaGames:
+            type: boolean
+
+  EmailRequestBody:
+    type: object
+    properties:
+      email:
+        type: string
+
+  UserPreferences:
+    type: object
+    properties:
+      preferences:
+        type: object
+        properties:
+          achievements:
+            type: boolean
+          leaderboardChanges:
+            type: boolean
+          gameInvites:
+            type: boolean
+          newTriviaGames:
+            type: boolean
